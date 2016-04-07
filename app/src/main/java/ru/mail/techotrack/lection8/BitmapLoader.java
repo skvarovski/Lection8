@@ -20,6 +20,7 @@ import java.net.URL;
 
 public class BitmapLoader extends AsyncTaskLoader<Bitmap> {
 	private final String _name;
+	private Bitmap _result;
 
 	public BitmapLoader(Context context, String name) {
 		super(context);
@@ -30,21 +31,20 @@ public class BitmapLoader extends AsyncTaskLoader<Bitmap> {
 	public Bitmap loadInBackground() {
 		try {
 			Context context = getContext();
-			Bitmap bitmap;
 			File file;
 			if (context != null) {
 				//InputStream is = context.getAssets().open(_name);
 				file = new File(context.getCacheDir(), _name.replace("/", ""));
-				bitmap = decodeFile(file);
-				if (null == bitmap ) {
+				_result = decodeFile(file);
+				if (null == _result ) {
 					URL url = new URL(_name);
 					InputStream is = url.openConnection().getInputStream();
 					OutputStream os = new FileOutputStream(file);
 					Utils.CopyStream(is, os);
 					os.close();
-					bitmap = decodeFile(file);
+					_result = decodeFile(file);
 				}
-				return bitmap;
+				return _result;
 			}
 		} catch (IOException e) {
 			Log.e("LoadImageTask", "LoadImageTask.LoadBitmap IOException " + e.getMessage(), e);
@@ -74,5 +74,26 @@ public class BitmapLoader extends AsyncTaskLoader<Bitmap> {
 
 	public String getName() {
 		return _name;
+	}
+
+	@Override
+	protected void onStartLoading() {
+		if (_result != null) {
+			deliverResult(_result);
+		}
+		else if (!takeContentChanged()) {
+			forceLoad();
+		}
+	}
+
+	@Override
+	protected void onStopLoading() {
+		cancelLoad();
+	}
+
+	@Override
+	protected void onReset() {
+		_result = null;
+		onStopLoading();
 	}
 }

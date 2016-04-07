@@ -175,7 +175,7 @@ public class ListLoaderFragment extends Fragment implements LoaderManager.Loader
 			DownloadDrawable dd = new DownloadDrawable(name.hashCode());
 			iv.setImageDrawable(dd);
 
-			getLoaderManager().initLoader(name.hashCode(), b, this).forceLoad();
+			getLoaderManager().initLoader(name.hashCode(), b, this);
 		}
 	}
 
