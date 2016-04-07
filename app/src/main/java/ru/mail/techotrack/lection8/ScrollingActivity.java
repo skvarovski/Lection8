@@ -7,7 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
 public class ScrollingActivity extends AppCompatActivity {
-    private ListLoaderFragment _listFragment;
+    private ListFragment _listFragment;
     private static final String TAG = "ScrollingActivity";
 
     @Override
@@ -17,7 +17,7 @@ public class ScrollingActivity extends AppCompatActivity {
 
         ImageData.createInstance();
 
-        _listFragment = new ListLoaderFragment();
+        _listFragment = new ListFragment();
     }
 
     @Override
